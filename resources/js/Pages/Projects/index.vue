@@ -3,11 +3,11 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import CreateDialog from "@/Components/Projects/CreateDialog.vue";
 import EditDialog from "@/Components/Projects/EditDialog.vue";
 import { ref } from "vue";
-import { Project } from "../../Types/project";
 import { Link } from "@inertiajs/vue3";
 import axios from "axios";
 import { Task } from "@/Types/task";
 import { router } from "@inertiajs/vue3";
+import { Project } from "@/Types/project";
 
 const props = defineProps<{
     projects: Array<Project>;

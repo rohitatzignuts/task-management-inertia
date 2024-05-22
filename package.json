@@ -19,6 +19,7 @@
         "vue": "^3.4.0"
     },
     "dependencies": {
+        "vuedraggable": "^4.1.0",
         "vuetify": "^3.6.6"
     }
 }

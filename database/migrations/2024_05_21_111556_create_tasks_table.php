@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id')->constrained('projects')->cascade();
+            $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
             $table->string('title');
             $table->string('description')->nullable();
             $table->enum('status', ['created', 'inProgress', 'done'])->default('created');

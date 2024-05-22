@@ -20,6 +20,8 @@ const handleProjectCreate = () => {
             description: projectDescription.value,
         });
         emits("handleDialog");
+        projectTitle.value = "";
+        projectDescription.value = "";
     } catch (error) {
         console.log(error);
     }

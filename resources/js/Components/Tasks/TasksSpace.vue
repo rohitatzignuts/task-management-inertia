@@ -7,7 +7,9 @@ import axios from "axios";
 
 const isCreating = ref<boolean>(false);
 const taskTitle = ref<string>("");
-const tasks = ref<Array<Task>>([]);
+const createdTasks = ref<Array<Task>>([]);
+const inProgressTasks = ref<Array<Task>>([]);
+const doneTasks = ref<Array<Task>>([]);
 
 const handleTaskCreate = async () => {
     try {
@@ -23,10 +25,27 @@ const handleTaskCreate = async () => {
     }
 };
 
+const handleTaskStatus = (id: number, status: string, type?: string) => {
+    try {
+        let data = { status };
+        if (type === "rev") {
+            data = { ...data, type };
+        }
+        router.visit(`/tasks/${id}/update`, {
+            method: "put",
+            data,
+        });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 const fetchTasks = async () => {
     try {
         const res = await axios.get(`/tasks/${router.page.props.project.id}`);
-        tasks.value = res.data;
+        createdTasks.value = res.data.createdTasks;
+        inProgressTasks.value = res.data.inProgressTasks;
+        doneTasks.value = res.data.doneTasks;
     } catch (error) {
         console.log(error);
     }
@@ -42,9 +61,12 @@ onMounted(() => {
         <main class="grid grid-cols-3 gap-3">
             <div class="min-h-[400px] bg-[rgb(131,111,255,0.25)] p-4">
                 <p class="mb-4 font-bold">
-                    TO DO <span>{{ tasks.length }}</span>
+                    TO DO <span>{{ createdTasks.length }}</span>
                 </p>
-                <CreatedToDos :tasks="tasks" />
+                <CreatedToDos
+                    :tasks="createdTasks"
+                    @handle-task-status="handleTaskStatus"
+                />
                 <div v-if="isCreating">
                     <v-text-field
                         v-model="taskTitle"
@@ -68,10 +90,18 @@ onMounted(() => {
 
             <div class="min-h-[400px] bg-[rgb(131,111,255,0.25)] p-4">
                 <p class="mb-4 font-bold">IN PROGRESS <span></span></p>
+                <CreatedToDos
+                    :tasks="inProgressTasks"
+                    @handle-task-status="handleTaskStatus"
+                />
             </div>
 
             <div class="min-h-[400px] bg-[rgb(131,111,255,0.25)] p-4">
                 <p class="mb-4 font-bold">DONE <span></span></p>
+                <CreatedToDos
+                    :tasks="doneTasks"
+                    @handle-task-status="handleTaskStatus"
+                />
             </div>
         </main>
     </div>

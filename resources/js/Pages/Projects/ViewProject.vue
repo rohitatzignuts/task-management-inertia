@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Project } from "../../Types/project";
+import { Project } from "@/Types/project";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import TasksSpace from "../../Components/Tasks/TasksSpace.vue";
+import TasksSpace from "@/Components/Tasks/TasksSpace.vue";
 const props = defineProps<{
     project: Project;
 }>();
