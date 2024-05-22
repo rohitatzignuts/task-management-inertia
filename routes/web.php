@@ -39,7 +39,8 @@ Route::prefix('tasks')->middleware('auth')->group(function () {
     Route::get('/{project}', [TaskController::class, 'index'])->name('tasks');
     Route::get('/{task}', [TaskController::class, 'view'])->name('tasks.view');
     Route::post('/store', [TaskController::class, 'store'])->name('tasks.store');
-    Route::put('/{task}/update', [TaskController::class, 'update'])->name('tasks.update');
+    Route::put('/{task}/update', [TaskController::class, 'updateStatus'])->name('tasks.update');
+    Route::put('/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
     Route::delete('/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 });
 require __DIR__.'/auth.php';

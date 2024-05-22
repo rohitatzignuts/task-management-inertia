@@ -8,6 +8,8 @@ const emits = defineEmits<{
         status: string,
         type?: string
     ): void;
+    (event: "handleTaskEdit", id: number, value: string): void;
+    (event: "handleTaskDelete", id: number): void;
 }>();
 
 const props = defineProps<{
@@ -53,6 +55,46 @@ const props = defineProps<{
                         class="pa-2"
                         @click="emits('handleTaskStatus', task.id, task.status)"
                     />
+                    <v-menu>
+                        <template v-slot:activator="{ props }">
+                            <v-btn
+                                v-bind="props"
+                                append-icon="mdi-dots-vertical"
+                                rounded=""
+                                size="md"
+                                class="pa-2"
+                                variant="text"
+                            />
+                        </template>
+
+                        <v-list bg-color="#836FFF">
+                            <v-list-item>
+                                <v-list-item-title
+                                    ><v-btn
+                                        v-if="task.status == 'created'"
+                                        variant="text"
+                                        @click="
+                                            emits(
+                                                'handleTaskEdit',
+                                                task.id,
+                                                task.title
+                                            )
+                                        "
+                                        >EDIT</v-btn
+                                    >
+                                </v-list-item-title>
+                                <v-list-item-title>
+                                    <v-btn
+                                        variant="text"
+                                        @click="
+                                            emits('handleTaskDelete', task.id)
+                                        "
+                                        >DELETE</v-btn
+                                    >
+                                </v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
                 </div>
             </v-card>
         </div>

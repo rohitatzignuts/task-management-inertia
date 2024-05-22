@@ -35,7 +35,17 @@ class TaskController extends Controller
         );
     }
 
-    public function update($id, Request $request)
+    public function edit($id, Request $request)
+    {
+        $task = Task::findOrFail($id);
+        $task->update(
+            $request->validate([
+                'title' => 'string',
+            ]),
+        );
+    }
+
+    public function updateStatus($id, Request $request)
     {
         $task = Task::findOrFail($id);
         $status = $request->input('status');
@@ -44,7 +54,8 @@ class TaskController extends Controller
         $newStatus = $this->getNewStatus($status, $type);
 
         if ($newStatus) {
-            $task->update(['status' => $newStatus]);
+            $updateData = ['status' => $newStatus];
+            $task->update($updateData);
         } else {
             return response()->json(['message' => 'Invalid status update request'], 400);
         }
@@ -59,5 +70,10 @@ class TaskController extends Controller
         ];
 
         return $statusMap[$status] ?? null;
+    }
+
+    public function destroy($id)
+    {
+        $task = Task::findOrFail($id)->delete();
     }
 }

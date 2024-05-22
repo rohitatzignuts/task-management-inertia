@@ -11,7 +11,7 @@ const createdTasks = ref<Array<Task>>([]);
 const inProgressTasks = ref<Array<Task>>([]);
 const doneTasks = ref<Array<Task>>([]);
 
-const handleTaskCreate = async () => {
+const handleTaskCreate = () => {
     try {
         router.post("/tasks/store", {
             title: taskTitle.value,
@@ -25,9 +25,38 @@ const handleTaskCreate = async () => {
     }
 };
 
-const handleTaskStatus = (id: number, status: string, type?: string) => {
+const handleTaskEdit = (id: number, title: string) => {
     try {
-        let data = { status };
+        isCreating.value = true;
+        taskTitle.value = title;
+        router.put(`/tasks/${id}/edit`, {
+            title: taskTitle.value,
+        });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const handleTaskDelete = (id: number) => {
+    try {
+        if (confirm("ARE YOU SURE?")) {
+            router.visit(`/tasks/${id}`, {
+                method: "delete",
+            });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const handleTaskUpdate = (
+    id: number,
+    status: string,
+    type?: string,
+    title?: string
+) => {
+    try {
+        let data = { status, title };
         if (type === "rev") {
             data = { ...data, type };
         }
@@ -65,7 +94,9 @@ onMounted(() => {
                 </p>
                 <CreatedToDos
                     :tasks="createdTasks"
-                    @handle-task-status="handleTaskStatus"
+                    @handle-task-status="handleTaskUpdate"
+                    @handle-task-edit="handleTaskEdit"
+                    @handle-task-delete="handleTaskDelete"
                 />
                 <div v-if="isCreating">
                     <v-text-field
@@ -89,18 +120,24 @@ onMounted(() => {
             </div>
 
             <div class="min-h-[400px] bg-[rgb(131,111,255,0.25)] p-4">
-                <p class="mb-4 font-bold">IN PROGRESS <span></span></p>
+                <p class="mb-4 font-bold">
+                    IN PROGRESS <span>{{ inProgressTasks.length }}</span>
+                </p>
                 <CreatedToDos
                     :tasks="inProgressTasks"
-                    @handle-task-status="handleTaskStatus"
+                    @handle-task-status="handleTaskUpdate"
+                    @handle-task-delete="handleTaskDelete"
                 />
             </div>
 
             <div class="min-h-[400px] bg-[rgb(131,111,255,0.25)] p-4">
-                <p class="mb-4 font-bold">DONE <span></span></p>
+                <p class="mb-4 font-bold">
+                    DONE <span>{{ doneTasks.length }}</span>
+                </p>
                 <CreatedToDos
                     :tasks="doneTasks"
-                    @handle-task-status="handleTaskStatus"
+                    @handle-task-status="handleTaskUpdate"
+                    @handle-task-delete="handleTaskDelete"
                 />
             </div>
         </main>
